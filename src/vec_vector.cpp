@@ -37,11 +37,11 @@ void _vec_hadamard_mul_257(int n, uint32_t* x, uint32_t* y)
     int i;
 
     for (i = 0; i < n / 2; i++) {
-        x[i] = (((uint64_t)x[i]) * y[i]) % 257;
+        x[i] = (static_cast<uint64_t>(x[i]) * y[i]) % 257;
     }
 
     for (int j = 0; j < n / 2; j++) {
-        x[i + j] = (((uint64_t)x[i + j]) * y[j]) % 257;
+        x[i + j] = (static_cast<uint64_t>(x[i + j]) * y[j]) % 257;
     }
 }
 
@@ -50,11 +50,11 @@ void _vec_hadamard_mul_65537(int n, uint32_t* x, uint32_t* y)
     int i;
 
     for (i = 0; i < n / 2; i++) {
-        x[i] = (((uint64_t)x[i]) * y[i]) % 65537;
+        x[i] = (static_cast<uint64_t>(x[i]) * y[i]) % 65537;
     }
 
     for (int j = 0; j < n / 2; j++) {
-        x[i + j] = (((uint64_t)x[i + j]) * y[j]) % 65537;
+        x[i + j] = (static_cast<uint64_t>(x[i + j]) * y[j]) % 65537;
     }
 }
 

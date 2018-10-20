@@ -145,7 +145,7 @@ void Radix2<T>::init_bitrev()
 template <typename T>
 void Radix2<T>::bit_rev_permute(vec::Vector<T>& vec)
 {
-    for (unsigned i = 0; i < (unsigned)this->n; ++i) {
+    for (unsigned i = 0; i < static_cast<unsigned>(this->n); ++i) {
         if (rev[i] < i) {
             vec.swap(i, rev[i]);
         }
@@ -155,7 +155,7 @@ void Radix2<T>::bit_rev_permute(vec::Vector<T>& vec)
 template <typename T>
 void Radix2<T>::bit_rev_permute(vec::Buffers<T>& vec)
 {
-    for (unsigned i = 0; i < (unsigned)this->n; ++i) {
+    for (unsigned i = 0; i < static_cast<unsigned>(this->n); ++i) {
         if (rev[i] < i) {
             vec.swap(i, rev[i]);
         }
