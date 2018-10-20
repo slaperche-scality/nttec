@@ -56,7 +56,7 @@ template <typename T>
 class Doubled : public Vector<T> {
   public:
     explicit Doubled(const Vector<T>& vec);
-    const int get_n(void) const override;
+    int get_n(void) const override;
     const T& get(int i) const override;
 
   private:
@@ -71,7 +71,7 @@ Doubled<T>::Doubled(const Vector<T>& vec)
 }
 
 template <typename T>
-const int Doubled<T>::get_n(void) const
+int Doubled<T>::get_n(void) const
 {
     return vec->get_n() * 2;
 }
