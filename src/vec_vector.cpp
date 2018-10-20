@@ -32,7 +32,7 @@
 namespace quadiron {
 namespace vec {
 
-void _vec_hadamard_mul_257(int n, uint32_t* x, uint32_t* y)
+static inline void vec_hadamard_mul_257(int n, uint32_t* x, uint32_t* y)
 {
     int i;
 
@@ -45,7 +45,7 @@ void _vec_hadamard_mul_257(int n, uint32_t* x, uint32_t* y)
     }
 }
 
-void _vec_hadamard_mul_65537(int n, uint32_t* x, uint32_t* y)
+static inline void vec_hadamard_mul_65537(int n, uint32_t* x, uint32_t* y)
 {
     int i;
 
@@ -58,7 +58,7 @@ void _vec_hadamard_mul_65537(int n, uint32_t* x, uint32_t* y)
     }
 }
 
-void _vec_add_257(int n, uint32_t* x, uint32_t* y)
+static inline void vec_add_257(int n, uint32_t* x, uint32_t* y)
 {
     int i;
 
@@ -71,7 +71,7 @@ void _vec_add_257(int n, uint32_t* x, uint32_t* y)
     }
 }
 
-void _vec_add_65537(int n, uint32_t* x, uint32_t* y)
+static inline void vec_add_65537(int n, uint32_t* x, uint32_t* y)
 {
     int i;
 
@@ -93,12 +93,12 @@ void Vector<uint32_t>::hadamard_mul(Doubled<uint32_t>* v)
     if (rn->card() == 257) {
         uint32_t* a = get_mem();
         uint32_t* b = v->get_mem();
-        _vec_hadamard_mul_257(n, a, b);
+        vec_hadamard_mul_257(n, a, b);
         return;
     } else if (rn->card() == 65537) {
         uint32_t* a = get_mem();
         uint32_t* b = v->get_mem();
-        _vec_hadamard_mul_65537(n, a, b);
+        vec_hadamard_mul_65537(n, a, b);
         return;
     }
     uint32_t* src = v->get_mem();
@@ -119,12 +119,12 @@ void Vector<uint32_t>::add(Doubled<uint32_t>* v)
     if (rn->card() == 257) {
         uint32_t* a = get_mem();
         uint32_t* b = v->get_mem();
-        _vec_add_257(n, a, b);
+        vec_add_257(n, a, b);
         return;
     } else if (rn->card() == 65537) {
         uint32_t* a = get_mem();
         uint32_t* b = v->get_mem();
-        _vec_add_65537(n, a, b);
+        vec_add_65537(n, a, b);
         return;
     }
     uint32_t* src = v->get_mem();
@@ -136,7 +136,7 @@ void Vector<uint32_t>::add(Doubled<uint32_t>* v)
         mem[i] = rn->add(mem[i], src[j]);
 }
 
-void _vec_hadamard_mul_257(int n, uint64_t* x, uint64_t* y)
+static inline void vec_hadamard_mul_257(int n, uint64_t* x, uint64_t* y)
 {
     int i;
 
@@ -149,7 +149,7 @@ void _vec_hadamard_mul_257(int n, uint64_t* x, uint64_t* y)
     }
 }
 
-void _vec_hadamard_mul_65537(int n, uint64_t* x, uint64_t* y)
+static inline void vec_hadamard_mul_65537(int n, uint64_t* x, uint64_t* y)
 {
     int i;
 
@@ -162,7 +162,7 @@ void _vec_hadamard_mul_65537(int n, uint64_t* x, uint64_t* y)
     }
 }
 
-void _vec_add_257(int n, uint64_t* x, uint64_t* y)
+static inline void vec_add_257(int n, uint64_t* x, uint64_t* y)
 {
     int i;
 
@@ -175,7 +175,7 @@ void _vec_add_257(int n, uint64_t* x, uint64_t* y)
     }
 }
 
-void _vec_add_65537(int n, uint64_t* x, uint64_t* y)
+static inline void vec_add_65537(int n, uint64_t* x, uint64_t* y)
 {
     int i;
 
@@ -197,12 +197,12 @@ void Vector<uint64_t>::hadamard_mul(Doubled<uint64_t>* v)
     if (rn->card() == 257) {
         uint64_t* a = get_mem();
         uint64_t* b = v->get_mem();
-        _vec_hadamard_mul_257(n, a, b);
+        vec_hadamard_mul_257(n, a, b);
         return;
     } else if (rn->card() == 65537) {
         uint64_t* a = get_mem();
         uint64_t* b = v->get_mem();
-        _vec_hadamard_mul_65537(n, a, b);
+        vec_hadamard_mul_65537(n, a, b);
         return;
     }
     uint64_t* src = v->get_mem();
@@ -223,12 +223,12 @@ void Vector<uint64_t>::add(Doubled<uint64_t>* v)
     if (rn->card() == 257) {
         uint64_t* a = get_mem();
         uint64_t* b = v->get_mem();
-        _vec_add_257(n, a, b);
+        vec_add_257(n, a, b);
         return;
     } else if (rn->card() == 65537) {
         uint64_t* a = get_mem();
         uint64_t* b = v->get_mem();
-        _vec_add_65537(n, a, b);
+        vec_add_65537(n, a, b);
         return;
     }
     uint64_t* src = v->get_mem();
