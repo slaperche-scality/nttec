@@ -69,9 +69,15 @@ template <typename T>
 class Vector {
   public:
     const gf::RingModN<T>* rn;
+
     Vector(const gf::RingModN<T>& rn, int n, T* mem = nullptr, int mem_len = 0);
     Vector(const gf::RingModN<T>& rn, std::initializer_list<T> values);
+    Vector(const Vector& other);
+    Vector(Vector&& other) noexcept;
+    Vector& operator=(const Vector& other);
+    Vector& operator=(Vector&& other) noexcept;
     virtual ~Vector();
+
     const gf::RingModN<T>& get_gf(void) const;
     virtual int get_n(void) const;
     int get_mem_len(void) const;
@@ -102,6 +108,18 @@ class Vector {
     void sort();
     void swap(unsigned i, unsigned j);
 
+    friend void swap(Vector<T>& lhs, Vector<T>& rhs) noexcept
+    {
+        using std::swap;
+
+        swap(lhs.rn, rhs.rn);
+        swap(lhs.n, rhs.n);
+        swap(lhs.mem, rhs.mem);
+        swap(lhs.mem_len, rhs.mem_len);
+        swap(lhs.new_mem, rhs.new_mem);
+        swap(lhs.allocator, rhs.allocator);
+    }
+
   protected:
     int n;
 
@@ -110,13 +128,19 @@ class Vector {
     int mem_len;
     bool new_mem;
     simd::AlignedAllocator<T> allocator;
+
+    void destroy()
+    {
+        if (new_mem) {
+            this->allocator.deallocate(this->mem, n);
+        }
+    }
 };
 
 template <typename T>
 Vector<T>::Vector(const gf::RingModN<T>& rn, int n, T* mem, int mem_len)
+    : rn(&rn), n(n)
 {
-    this->rn = &rn;
-    this->n = n;
     if (mem == nullptr) {
         this->mem = this->allocator.allocate(n);
         this->mem_len = n;
@@ -139,11 +163,52 @@ Vector<T>::Vector(const gf::RingModN<T>& rn, std::initializer_list<T> values)
 }
 
 template <typename T>
-Vector<T>::~Vector()
+Vector<T>::Vector(Vector const& other)
+    : rn(other.rn), n(other.n), new_mem(other.new_mem),
+      allocator(other.allocator)
 {
     if (new_mem) {
-        this->allocator.deallocate(this->mem, n);
+        this->mem = this->allocator.allocate(other.mem_len);
+        std::copy_n(this->mem, other.mem_len, other.mem);
+    } else {
+        this->mem = other.mem;
     }
+    this->mem_len = other.mem_len;
+}
+
+template <typename T>
+Vector<T>::Vector(Vector&& other) noexcept
+    : rn(other.rn), n(other.n), mem(std::exchange(other.mem, nullptr)),
+      mem_len(other.mem_len), new_mem(other.new_mem), allocator(other.allocator)
+{
+}
+
+template <typename T>
+Vector<T>& Vector<T>::operator=(const Vector<T>& other)
+{
+    Vector<T> tmp(other);
+    swap(*this, tmp);
+    return *this;
+}
+
+template <typename T>
+Vector<T>& Vector<T>::operator=(Vector<T>&& other) noexcept
+{
+    this->destroy();
+    this->rn = other.rn;
+    this->n = other.rn;
+    this->mem = std::exchange(other.mem, nullptr);
+    this->mem_len = other.mem_len;
+    this->new_mem = other.new_mem;
+    this->allocator = other.allocator;
+
+    return *this;
+}
+
+template <typename T>
+Vector<T>::~Vector()
+{
+    destroy();
 }
 
 template <typename T>
@@ -206,9 +271,7 @@ inline T* Vector<T>::get_mem() const
 template <typename T>
 inline void Vector<T>::set_mem(T* mem, int mem_len)
 {
-    if (new_mem) {
-        this->allocator.deallocate(this->mem, n);
-    }
+    destroy();
     new_mem = false;
     this->mem = mem;
     this->mem_len = mem_len;
@@ -435,7 +498,8 @@ void Vector<T>::dump(void) const
 }
 
 #ifndef QUADIRON_USE_SIMD
-// try to improve performance without parallization
+
+// Try to improve performance without parallization.
 template <>
 void Vector<uint32_t>::add(Doubled<uint32_t>* v);
 template <>
