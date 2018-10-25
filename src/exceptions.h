@@ -57,6 +57,13 @@ class InvalidArgument : public LogicError {
     explicit InvalidArgument(const char* reason) : LogicError(reason) {}
 };
 
+/** Raised when a contained is accessed with an invalid index. */
+class OutOfRange : public LogicError {
+  public:
+    explicit OutOfRange(const std::string& reason) : LogicError(reason) {}
+    explicit OutOfRange(const char* reason) : LogicError(reason) {}
+};
+
 /** A domain error. */
 class DomainError : public Exception {
   public:
